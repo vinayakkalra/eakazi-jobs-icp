@@ -69,12 +69,19 @@ class _SignInState extends State<SignIn> {
   String _decodedDelegation = '';
   CanisterActor? get actor => newActor;
   late AuthState authState;
+  late WidgetRef _ref;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _ref = ProviderScope.of(context); // Get provider reference
+  }
 
   @override
   void initState() {
     super.initState();
     ed25519();
-    authState = context.read(authProvider);
+    final authState = _ref.watch<AuthState>(authProvider); // Use ref.watch
     authState.initUniLinks();
   }
 
@@ -166,13 +173,13 @@ class _SignInState extends State<SignIn> {
         //   Get.toNamed(path);
         // }
         //
-        var checkUser = false;
+        // var checkUser = false;
 
-        if (checkUser == true) {
-          Get.toNamed(Routes.home);
-        } else {
-          Get.toNamed(Routes.signup);
-        }
+        // if (checkUser == true) {
+        //   Get.toNamed(Routes.home);
+        // } else {
+        //   Get.toNamed(Routes.signup);
+        // }
 
         // var checkUser = await newActor?.getFunc(CounterMethod.checkUser)?.call([]);
 
@@ -196,9 +203,9 @@ class _SignInState extends State<SignIn> {
         //   }
         // }, onError: (err) {
         //   print('Error processing incoming URI: $err');
-      }
-    });
-  }
+  //     }
+  //   });
+  // }
 
   // ---------------- Generating ED25519 Key ----------------
   Ed25519KeyIdentity? newIdentity;

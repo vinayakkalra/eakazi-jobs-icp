@@ -58,6 +58,8 @@ class AuthState {
     });
   }
 
+  
+
   void dispose() {
     _sub?.cancel();
   }
