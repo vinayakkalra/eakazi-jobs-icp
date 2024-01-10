@@ -16,7 +16,8 @@ import '../../../../../helpers/utils/utils.dart';
 import '../../../../../integrations.dart';
 import '../../../../shared_widgets/buttons.dart';
 import '../../../../shared_widgets/input_text.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../state.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -67,13 +68,14 @@ class _SignInState extends State<SignIn> {
   // Counter? counter;
   String _decodedDelegation = '';
   CanisterActor? get actor => newActor;
-
+  late AuthState authState;
 
   @override
   void initState() {
     super.initState();
     ed25519();
-    initUniLinks();
+    authState = context.read(authProvider);
+    authState.initUniLinks();
   }
 
   @override
@@ -95,46 +97,52 @@ class _SignInState extends State<SignIn> {
     });
   }
 
+  
+
+  
+
+
+
   // ---------------- Receiving Query Params ----------------
 
-  void printWrapped(String text) {
-    final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
-  }
+  // void printWrapped(String text) {
+  //   final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
+  //   pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  // }
 
-  Future<void> initUniLinks() async {
-    _sub = uriLinkStream.listen((Uri? uri) async {
-      if (uri != null && uri.scheme == 'auth' && uri.host == 'callback') {
-        var queryParams = uri.queryParameters;
+  // Future<void> initUniLinks() async {
+  //   _sub = uriLinkStream.listen((Uri? uri) async {
+  //     if (uri != null && uri.scheme == 'auth' && uri.host == 'callback') {
+  //       var queryParams = uri.queryParameters;
 
-        String delegationString = queryParams['del'].toString();
-        printWrapped("DelegationString: $delegationString");
+  //       String delegationString = queryParams['del'].toString();
+  //       printWrapped("DelegationString: $delegationString");
 
-        _decodedDelegation = Uri.decodeComponent(delegationString);
-        printWrapped("Decoded DelegationString: $_decodedDelegation");
+  //       _decodedDelegation = Uri.decodeComponent(delegationString);
+  //       printWrapped("Decoded DelegationString: $_decodedDelegation");
 
-        DelegationChain _delegationChain =
-            DelegationChain.fromJSON(jsonDecode(_decodedDelegation));
+  //       DelegationChain _delegationChain =
+  //           DelegationChain.fromJSON(jsonDecode(_decodedDelegation));
 
-        DelegationIdentity _delegationIdentity =
-            DelegationIdentity(newIdentity!, _delegationChain);
+  //       DelegationIdentity _delegationIdentity =
+  //           DelegationIdentity(newIdentity!, _delegationChain);
 
-        HttpAgent newAgent = HttpAgent(
-          options: HttpAgentOptions(
-            identity: _delegationIdentity,
-          ),
-          defaultHost: 'localhost',
-          defaultPort: 4943,
-          defaultProtocol: 'http',
-        );
+  //       HttpAgent newAgent = HttpAgent(
+  //         options: HttpAgentOptions(
+  //           identity: _delegationIdentity,
+  //         ),
+  //         defaultHost: 'localhost',
+  //         defaultPort: 4943,
+  //         defaultProtocol: 'http',
+  //       );
 
-        // Creating Canister Actor -----------------------
-        newActor = CanisterActor(
-            ActorConfig(
-              canisterId: Principal.fromText('a4tbr-q4aaa-aaaaa-qaafq-cai'),
-              agent: newAgent,
-            ),
-            FieldsMethod.idl);
+  //       // Creating Canister Actor -----------------------
+  //       newActor = CanisterActor(
+  //           ActorConfig(
+  //             canisterId: Principal.fromText('a4tbr-q4aaa-aaaaa-qaafq-cai'),
+  //             agent: newAgent,
+  //           ),
+  //           FieldsMethod.idl);
 
         // var createUser = await newActor?.getFunc(FieldsMethod.createUser)?.call([
         //   'John Doe',
