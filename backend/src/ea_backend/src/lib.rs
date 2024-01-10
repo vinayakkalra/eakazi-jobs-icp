@@ -75,7 +75,8 @@ thread_local! {
 }
 
 #[update]
-async fn checkUser(user: Principal) -> bool {
+async fn checkUser() -> bool {
+    let user = ic_cdk::api::caller();
     let exists = CHECK_USER_STORE.with(|check_user_store| {
         check_user_store
             .borrow()
@@ -88,9 +89,9 @@ async fn checkUser(user: Principal) -> bool {
         CHECK_USER_STORE.with(|check_user_store| {
             check_user_store.borrow_mut().push(CheckUser { user });
         });
-        true
-    } else {
         false
+    } else {
+        true
     }
 }
 
