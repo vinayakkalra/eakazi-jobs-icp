@@ -52,14 +52,15 @@ import 'dart:convert';
 CanisterActor? newActor;
 var fullName;
 
-class SignIn extends StatefulWidget {
-  SignIn({Key? key}) : super(key: key);
+class SignIn extends ConsumerStatefulWidget {
+  const SignIn({Key? key}) : super(key: key);
 
   @override
-  _SignInState createState() => _SignInState();
+  
+  ConsumerState<SignIn> createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignInState extends ConsumerState<SignIn> {
   String? _error;
   StreamSubscription? _sub;
   String? _principalIdentity;
@@ -70,19 +71,14 @@ class _SignInState extends State<SignIn> {
   CanisterActor? get actor => newActor;
   late AuthState authState;
   late WidgetRef _ref;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _ref = ProviderScope.of(context); // Get provider reference
-  }
+  
 
   @override
   void initState() {
     super.initState();
-    ed25519();
-    final authState = _ref.watch<AuthState>(authProvider); // Use ref.watch
-    authState.initUniLinks();
+    // ed25519();
+    ref.read(authProvider.notifier).initUniLinks();
+
   }
 
   @override
@@ -208,15 +204,15 @@ class _SignInState extends State<SignIn> {
   // }
 
   // ---------------- Generating ED25519 Key ----------------
-  Ed25519KeyIdentity? newIdentity;
-  Future<void> ed25519() async {
-    newIdentity = await Ed25519KeyIdentity.generate(null);
-    Ed25519PublicKey publicKey = newIdentity!.getPublicKey();
-    var publicKeyDer = publicKey.toDer();
-    publicKeyString = bytesToHex(publicKeyDer);
+  // Ed25519KeyIdentity? newIdentity;
+  // Future<void> ed25519() async {
+  //   newIdentity = await Ed25519KeyIdentity.generate(null);
+  //   Ed25519PublicKey publicKey = newIdentity!.getPublicKey();
+  //   var publicKeyDer = publicKey.toDer();
+  //   publicKeyString = bytesToHex(publicKeyDer);
 
-    print("Public Key: $publicKeyString");
-  }
+  //   print("Public Key: $publicKeyString");
+  // }
 
   // ---------------- Authentication ----------------
   Future<void> authenticate() async {
@@ -322,8 +318,11 @@ class _SignInState extends State<SignIn> {
     return;
   }
 
+  
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+
     SignInValidateInputController c = Get.put(SignInValidateInputController());
 
     // AuthClient client = AuthClient(scheme: scheme, authFunction: authunction);
