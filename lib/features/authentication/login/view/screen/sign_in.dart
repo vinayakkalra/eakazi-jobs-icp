@@ -24,6 +24,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:agent_dart/agent_dart.dart';
+
 import 'package:eakazijobs/helpers/utils/customLoader.dart';
 import 'package:eakazijobs/models/signupModel.dart';
 import 'package:eakazijobs/services/auth_service.dart';
@@ -35,10 +36,10 @@ import 'package:sizer/sizer.dart';
 import 'package:eakazijobs/interactions.dart';
 import 'package:eakazijobs/integrations.dart';
 import 'package:eakazijobs/init.dart';
-import 'package:eakazijobs/features/authentication/login/view/screen/sign_in.dart'
-as signIn;
+import 'package:eakazijobs/features/authentication/login/view/screen/sign_in.dart' as signIn;
 import 'package:get/get.dart';
 import 'package:agent_dart/agent_dart.dart';
+
 import '../../../../../constants/assets/images_constants.dart';
 import '../../../../../constants/theme/color_selection.dart';
 import '../../../../../helpers/routes/app_pages.dart';
@@ -48,9 +49,8 @@ import '../../../../shared_widgets/input_text.dart';
 import '../../../../shared_widgets/options_drop_down.dart';
 import 'dart:convert';
 
-// Global variables --------------------------
 CanisterActor? newActor;
-// var fullName;
+var fullName;
 
 class SignIn extends ConsumerStatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -63,17 +63,15 @@ class SignIn extends ConsumerStatefulWidget {
 class _SignInState extends ConsumerState<SignIn> {
   String? _error;
   StreamSubscription? _sub;
+  String? _principalIdentity;
+  bool _isLoggedIn = false;
   var publicKeyString;
-<<<<<<< HEAD
   // Counter? counter;
   String _decodedDelegation = '';
   CanisterActor? get actor => newActor;
   late AuthState authState;
   late WidgetRef _ref;
   
-=======
-  Ed25519KeyIdentity? newIdentity;
->>>>>>> origin/integration
 
   @override
   void initState() {
@@ -90,7 +88,6 @@ class _SignInState extends ConsumerState<SignIn> {
     super.dispose();
   }
 
-<<<<<<< HEAD
   // ---------------- Handling Login ----------------
   void handleLogin() async {
     await authenticate();
@@ -103,16 +100,12 @@ class _SignInState extends ConsumerState<SignIn> {
       _principalIdentity = null;
     });
   }
-=======
-  // ---------------- Receiving Query Params ----------------
->>>>>>> origin/integration
 
   Future<void> initUniLinks() async {
     _sub = uriLinkStream.listen((Uri? uri) async {
       if (uri != null && uri.scheme == 'auth' && uri.host == 'callback') {
         var queryParams = uri.queryParameters;
         String delegationString = queryParams['del'].toString();
-<<<<<<< HEAD
         String decodedDelegation = Uri.decodeComponent(delegationString);
         ref.read(authProvider.notifier).newDelegation(decodedDelegation);
         
@@ -125,19 +118,8 @@ class _SignInState extends ConsumerState<SignIn> {
 }
   
 
-=======
-
-        String _decodedDelegation = Uri.decodeComponent(delegationString);
-
-        DelegationChain _delegationChain =
-        DelegationChain.fromJSON(jsonDecode(_decodedDelegation));
-
-        DelegationIdentity _delegationIdentity =
-        DelegationIdentity(newIdentity!, _delegationChain);
->>>>>>> origin/integration
 
 
-<<<<<<< HEAD
   // ---------------- Receiving Query Params ----------------
 
   // void printWrapped(String text) {
@@ -245,51 +227,11 @@ class _SignInState extends ConsumerState<SignIn> {
 
   //   print("Public Key: $publicKeyString");
   // }
-=======
-        // Creating Canister Actor -----------------------
-        newActor = CanisterActor(
-            ActorConfig(
-              canisterId: Principal.fromText('br5f7-7uaaa-aaaaa-qaaca-cai'),
-              agent: newAgent,
-            ),
-            FieldsMethod.idl);
-
-        var checkUser = await newActor!.getFunc(FieldsMethod.checkUser)?.call([]);
-          // var checkUser = false;
-        // print("CheckUser : $checkUser");
-
-        if (checkUser == true) {
-          customLoader.showLoader('Welcome back, please wait...');
-          Future.delayed(Duration(seconds: 1), () {
-            customLoader.dismissLoader();
-            Get.toNamed(Routes.home);
-          });
-        } else {
-          customLoader
-              .showLoader('Hey you are new here, please enter your details');
-          Future.delayed(Duration(seconds: 1), () {
-            customLoader.dismissLoader();
-            Get.toNamed(Routes.signup);
-          });
-        }
-
-      }
-    });
-  }
-
-  Future<void> newDelegation(decodedDelegation) async {
-
-  }
->>>>>>> origin/integration
 
   // ---------------- Authentication ----------------
   Future<void> authenticate() async {
     try {
-      newIdentity = await Ed25519KeyIdentity.generate(null);
-      Ed25519PublicKey publicKey = newIdentity!.getPublicKey();
-      var publicKeyDer = publicKey.toDer();
-      publicKeyString = bytesToHex(publicKeyDer);
-
+      // ----- Port : 4943 -----
       const baseUrl = 'http://localhost:4943';
       final url =
           '$baseUrl?sessionkey=$publicKeyString&canisterId=bd3sg-teaaa-aaaaa-qaaba-cai';
@@ -318,6 +260,66 @@ class _SignInState extends ConsumerState<SignIn> {
   SigninModel signinModel = SigninModel();
   AuthService authService = AuthService();
   CustomLoader customLoader = CustomLoader();
+  //  var authClientCreateOptions = AuthClientLoginOptions()
+  // var createUrlOptions = CreateUrlOptions(
+  //   redirectUri: Uri(
+  //     scheme: "https",
+  //     path: "login.html",
+  //     host: "https://identity.ic0.app/#authorize",
+  //   )
+  //   publicKey: publicKey, // of session key
+  //    scope: scope
+  //    )
+
+  //   var authClient = AuthClient(
+  //   scheme: "rubaru",
+  //   path: "auth",
+  //   authFunction: (AuthPayload payload) async {
+  //     Uri uri = Uri(
+  //       scheme: "https",
+  //       path: "login.html",
+  //       host: "https://identity.ic0.app/#authorize",
+  //       queryParameters: {
+  //         "authUrl": payload.url,
+  //       },
+  //     );
+  //     String result = await FlutterWebAuth.authenticate(
+  //       url: uri.toString(),
+  //       callbackUrlScheme: "rubaru",
+  //     );
+  //     return result;
+  //   },
+  // );
+
+  // @override
+  // submitSecond(context) async {}
+  //
+  // @override
+  // submit(context) async {
+  //   try {
+  //     if (!_formKey.currentState!.validate()) {
+  //       return;
+  //     }
+  //     _formKey.currentState!.save();
+  //     customLoader.showLoader('Login you in...');
+  //
+  //     final result = await authService.signIn(signinModel);
+  //     print('result $result');
+  //     customLoader.dismissLoader();
+  //
+  //     Get.toNamed(Routes.home);
+  //     // if (signupModel.role == 'freelancer') {
+  //     //   Get.toNamed(Routes.freeLancerHome);
+  //     // }
+  //
+  //     // Get.to((CompleteRegistration()));
+  //     // Navigator.pushNamed(context, CompleteRegistrationRoute);
+  //
+  //     // Get.to(Tabs());
+  //   } catch (e) {
+  //     customLoader.showError(e);
+  //   }
+  // }
 
   validateFields(c) {
     print('validating fields');
@@ -339,116 +341,225 @@ class _SignInState extends ConsumerState<SignIn> {
 
     // AuthClient client = AuthClient(scheme: scheme, authFunction: authunction);
     return Obx(() => Scaffold(
-      // appBar: App,
+          // appBar: App,
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 50.h,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(ImageAssets.backGroundImage),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: SafeArea(
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: ColorsConst.white,
-                        ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: 50.h,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(ImageAssets.backGroundImage),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: SafeArea(
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: ColorsConst.white,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "Sign in",
+                            style: textTheme(context).headline2,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(
+                              "Welcome back to EA Kazi complete courses , Get trained and certified by experts on the platform",
+                              style: textTheme(context).subtitle2,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Text(
-                        "Sign in",
-                        style: textTheme(context).headline2,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(
-                          "Welcome back to EA Kazi complete courses , Get trained and certified by experts on the platform",
-                          style: textTheme(context).subtitle2,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Form(
-                  key: _formKey,
-                  onChanged: () {
-                    validateFields(c);
-                  },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Column(
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Form(
+                      key: _formKey,
+                      onChanged: () {
+                        validateFields(c);
+                      },
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            const SizedBox(
-                              width: 200,
-                              height: 100,
-                              child: Image(
-                                  image: AssetImage(ImageAssets.icpLogo)),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 24, right: 24),
-                              child: AuthBtn(
-                                isComplete: c.isValidated.value,
-                                onPressed: authenticate,
-                                text: "Sign in with Internet Identity",
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF522785),
-                                    Color(0xFFED1E79)
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                            // InputTextNormal(
+                            //     // controller: signUpCtrl.usernameController,
+                            //     autovalidateMode:
+                            //         AutovalidateMode.onUserInteraction,
+                            //     // validator: signUpCtrl.usernameValidator,
+                            //     hintText: "Email address",
+                            //     textInputAction: TextInputAction.next,
+                            //     onSave: (String? value) {
+                            //       signinModel.email = value;
+                            //     },
+                            //     validator: (String? value) {
+                            //       if (value == '') {
+                            //         return '';
+                            //       }
+                            //     },
+                            //     keyboardType: TextInputType.emailAddress),
+                            // const SizedBox(
+                            //   height: 24,
+                            // ),
+                            // InputPasswordText(
+                            //     // controller: signUpCtrl.passwordController,
+                            //     autovalidateMode:
+                            //         AutovalidateMode.onUserInteraction,
+                            //     // validator: signUpCtrl.passwordValidtor,
+                            //     hintText: "Password",
+                            //     textInputAction: TextInputAction.next,
+                            //     onSave: (String? value) {
+                            //       signinModel.password = value;
+                            //     },
+                            //     validator: (String? value) {
+                            //       if (value == '' || value!.length < 6) {
+                            //         return 'Password must be minimum of 6 characters';
+                            //       }
+                            //     },
+                            //     keyboardType: TextInputType.visiblePassword),
+                            // Align(
+                            //   alignment: Alignment.topRight,
+                            //   child: Text(
+                            //     "Forgot your password?",
+                            //     style: textTheme(context).subtitle1?.copyWith(
+                            //         color: colorScheme(context).secondary.withOpacity(0.5)),
+                            //   ),
+                            // ),
+
+                            // const SizedBox(
+                            //   height: 10,
+                            // ),
+                            // Align(
+                            //   alignment: Alignment.topRight,
+                            //   child: Text(
+                            //     "Forgot your password?",
+                            //     style: textTheme(context).subtitle1?.copyWith(
+                            //         color: colorScheme(context)
+                            //             .secondary
+                            //             .withOpacity(0.5)),
+                            //   ),
+                            // ),
+                            // SizedBox(
+                            //   height: 50,
+                            // ),
+                            Column(
+                              children: [
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       left: 16, right: 16),
+                                //   child: AuthBtn(
+                                //     isComplete: c.isValidated.value == true
+                                //         ? true
+                                //         : false,
+                                //     onPressed: () {
+                                //       submit(context);
+                                //       // Get.toNamed(Routes.freeLancerHome);
+                                //       // Loader<void>(context)
+                                //       //     .simpleLoader(() => signUpCtrl.signUp());
+                                //     },
+                                //     text: "Sign In",
+                                //   ),
+                                // ),
+
+                                // add internet identity signin
+                                // customDropDown, themes, buttons,badges, messagelistcontiner
+                                const SizedBox(
+                                  height: 50,
                                 ),
-                                textStyle: TextStyle(
-                                  color: Colors.white,
+                                const SizedBox(
+                                  width: 200,
+                                  height: 100,
+                                  child: Image(
+                                      image: AssetImage(ImageAssets.icpLogo)),
                                 ),
-                              ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 24, right: 24),
+                                  child: AuthBtn(
+                                    isComplete: c.isValidated.value,
+                                    onPressed: handleLogin, // Change here: Pass the handleLogin function
+                                    text: "Sign in with Internet Identity",
+                                    borderRadius: BorderRadius.circular(12),
+                                    gradient: LinearGradient(
+                                      colors: [Color(0xFF522785), Color(0xFFED1E79)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+
+                                // const SizedBox(
+                                //   height: 6,
+                                // ),
+                                InkWell(
+                                  onTap: () {
+                                    Get.toNamed(Routes.signup);
+                                  },
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: 'Dont have an account',
+                                      style: textTheme(context)
+                                          .subtitle1
+                                          ?.copyWith(
+                                              color: Colors.black
+                                                  .withOpacity(0.3)),
+                                      children: [
+                                        TextSpan(
+                                          text: "  Signup",
+                                          style: textTheme(context)
+                                              .subtitle1
+                                              ?.copyWith(
+                                                  color: colorScheme(context)
+                                                      .primary),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                )),
-          ],
-        ),
-      ),
-    ));
+                      ),
+                    )),
+                // const Spacer(),
+              ],
+            ),
+          ),
+        ));
   }
 }
 
