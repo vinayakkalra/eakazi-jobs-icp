@@ -76,8 +76,9 @@ class _SignInState extends ConsumerState<SignIn> {
   @override
   void initState() {
     super.initState();
+    initUniLinks();
     // ed25519();
-    ref.read(authProvider.notifier).initUniLinks();
+    // ref.read(authProvider.notifier).initUniLinks();
 
   }
 
@@ -100,8 +101,21 @@ class _SignInState extends ConsumerState<SignIn> {
     });
   }
 
-  
+  Future<void> initUniLinks() async {
+    _sub = uriLinkStream.listen((Uri? uri) async {
+      if (uri != null && uri.scheme == 'auth' && uri.host == 'callback') {
+        var queryParams = uri.queryParameters;
+        String delegationString = queryParams['del'].toString();
+        String decodedDelegation = Uri.decodeComponent(delegationString);
+        ref.read(authProvider.notifier).newDelegation(decodedDelegation);
+        
+        
+        }
 
+    });
+  }
+
+}
   
 
 
@@ -321,7 +335,7 @@ class _SignInState extends ConsumerState<SignIn> {
   
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    // final authState = ref.watch(authProvider);
 
     SignInValidateInputController c = Get.put(SignInValidateInputController());
 

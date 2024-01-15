@@ -24,13 +24,8 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   StreamSubscription? _sub;
   Ed25519KeyIdentity? newIdentity;
 
-  Future<void> initUniLinks() async {
-    _sub = uriLinkStream.listen((Uri? uri) async {
-      if (uri != null && uri.scheme == 'auth' && uri.host == 'callback') {
-        var queryParams = uri.queryParameters;
-        String delegationString = queryParams['del'].toString();
-        String decodedDelegation = Uri.decodeComponent(delegationString);
-
+ 
+Future<void> newDelegation(decodedDelegation) async {
         DelegationChain _delegationChain =
             DelegationChain.fromJSON(jsonDecode(decodedDelegation));
         DelegationIdentity _delegationIdentity =
@@ -56,12 +51,11 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
 
 
-    }});
-  }
+    }}
+  
 
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-}
+  // @override
+  // void dispose() {
+  //   _sub?.cancel();
+  //   super.dispose();
+  // }
