@@ -40,6 +40,10 @@ final RecordClass profile = IDL.Record({
 
 });
 
+final CheckUser = IDL.Record({
+  'user' : IDL.Principal,
+});
+
 abstract class FieldsMethod {
   /// use staic const as method name
   static const applyCourse = 'applyCourse';
@@ -62,7 +66,11 @@ abstract class FieldsMethod {
 
     FieldsMethod.applyJobs: IDL.Func([IDL.Principal], [], []),
 
+<<<<<<< HEAD
     FieldsMethod.checkUser: IDL.Func([IDL.Principal], [IDL.Bool], []),
+=======
+    FieldsMethod.checkUser: IDL.Func([], [IDL.Bool], []),
+>>>>>>> origin/integration
 
     FieldsMethod.createCourse: IDL.Func([IDL.Text], [course], []),
 
@@ -106,7 +114,11 @@ class Fields extends ActorHook {
     final res = await actor.getFunc(FieldsMethod.checkUser)!([id]);
     return res as Bool;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> origin/integration
   Future<Record> createUser({fullname = String, email = String, role = String}) async {
     final res = await actor.getFunc(FieldsMethod.createUser)!([fullname, email, role]);
     return res as Record;
@@ -119,7 +131,7 @@ class Fields extends ActorHook {
 
   Future<Record> get({id = String}) async {
     final res = await actor.getFunc(FieldsMethod.get)!([id]);
-    return res as Record; 
+    return res as Record;
   }
 
   Future<void> update({profile = Record}) async {

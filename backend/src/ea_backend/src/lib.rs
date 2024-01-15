@@ -105,7 +105,7 @@ async fn createUser(fullname: String, email: String, role: String) -> Profile {
     let uid = raw_rand().await.unwrap().0;
     let uid = format!("{:x}", Sha256::digest(&uid));
     // let uid = String::from_utf8(uid).unwrap();
-    
+
     // let uid = String::from_utf8(uid).unwrap_or_else(|err| {
     //     String::from_utf8_lossy(&err.into_bytes()).into_owned()
     // });
@@ -237,7 +237,7 @@ async fn createCourse(title: String) -> Course {
         applicants: vec![],
     }
 
-    
+
         // .unwrap_or_else(|| {
         //     panic!("Failed to insert course"); // Replace with more robust error handling if needed
         //   })
